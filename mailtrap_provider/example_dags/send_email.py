@@ -6,12 +6,11 @@ Before running this DAG:
    - Connection Id: mailtrap_default
    - Connection Type: mailtrap
    - Password: Your Mailtrap API token
-   - Extra (optional): {"sender": "noreply@yourdomain.com", "sender_name": "Your App"}
 
-2. Set the Airflow Variable 'test_email_recipient' with your test email address:
-   - Admin → Variables → Add
-   - Key: test_email_recipient
-   - Value: your-email@example.com
+2. Set the following Airflow Variables (Admin → Variables → Add):
+   - mailtrap_sender: Sender email address (must be from your verified domain)
+   - mailtrap_sender_name: Sender display name (optional, defaults to "Airflow Notifications")
+   - test_email_recipient: Recipient email address for testing
 """
 
 from airflow.decorators import dag
@@ -36,8 +35,10 @@ def mailtrap_send_email_example():
 
     Demonstrates basic email sending with the MailtrapSendEmailOperator.
     """
-    # Get recipient from Airflow Variable (set this in UI before running)
-    recipient = Variable.get("test_email_recipient", default_var="recipient@example.com")
+    # Get configuration from Airflow Variables (set these in UI before running)
+    recipient = Variable.get("test_email_recipient")
+    sender = Variable.get("mailtrap_sender")
+    sender_name = Variable.get("mailtrap_sender_name", default_var="Airflow Notifications")
 
     # Example 1: Send a simple plain text email
     send_plain_text_email = MailtrapSendEmailOperator(
@@ -45,8 +46,8 @@ def mailtrap_send_email_example():
         to=recipient,
         subject="Hello from Airflow!",
         text="This is a test email sent from Apache Airflow via Mailtrap.",
-        sender="noreply@yourdomain.com",  # Or configure in connection extras
-        sender_name="Airflow Notifications",
+        sender=sender,
+        sender_name=sender_name,
     )
 
     # Example 2: Send an HTML email
@@ -68,8 +69,8 @@ def mailtrap_send_email_example():
             </body>
         </html>
         """,
-        sender="noreply@yourdomain.com",
-        sender_name="Airflow Notifications",
+        sender=sender,
+        sender_name=sender_name,
         category="welcome",  # For Mailtrap analytics
     )
 
@@ -79,7 +80,8 @@ def mailtrap_send_email_example():
         to=[recipient],  # Add more emails to this list
         subject="Team Update from Airflow",
         text="This email was sent to multiple recipients.",
-        sender="noreply@yourdomain.com",
+        sender=sender,
+        sender_name=sender_name,
     )
 
     # Run examples in sequence

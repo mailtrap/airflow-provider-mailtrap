@@ -15,8 +15,9 @@ Setup:
 1. Create 'mailtrap_default' connection with your API token
 2. Set Airflow Variables:
    - motd_recipient: Email address to receive the message
-   - motd_sender: Sender email address
-   - motd_city: City for weather (default: "New York")
+   - motd_sender: Sender email address (must be from your verified domain)
+   - motd_sender_name: Sender display name (optional, defaults to "Daily Inspiration")
+   - motd_city: City for weather (optional, defaults to "New York")
 """
 
 from datetime import datetime, timedelta
@@ -191,12 +192,12 @@ Sent via Apache Airflow + Mailtrap
     # Send the email using Mailtrap
     send_email = MailtrapSendEmailOperator(
         task_id="send_daily_email",
-        to="{{ var.value.motd_recipient | default('recipient@example.com') }}",
+        to="{{ var.value.motd_recipient }}",
         subject="{{ ti.xcom_pull(task_ids='compose_email')['subject'] }}",
         html="{{ ti.xcom_pull(task_ids='compose_email')['html'] }}",
         text="{{ ti.xcom_pull(task_ids='compose_email')['text'] }}",
-        sender="{{ var.value.motd_sender | default('noreply@yourdomain.com') }}",
-        sender_name="Daily Inspiration",
+        sender="{{ var.value.motd_sender }}",
+        sender_name="{{ var.value.motd_sender_name | default('Daily Inspiration') }}",
         category="daily-digest",
     )
 
