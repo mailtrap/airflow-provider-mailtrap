@@ -14,7 +14,6 @@ Before running this DAG:
 """
 
 from airflow.decorators import dag
-from airflow.models import Variable
 from pendulum import datetime
 
 from mailtrap_provider.operators.send_email import MailtrapSendEmailOperator
@@ -35,25 +34,20 @@ def mailtrap_send_email_example():
 
     Demonstrates basic email sending with the MailtrapSendEmailOperator.
     """
-    # Get configuration from Airflow Variables (set these in UI before running)
-    recipient = Variable.get("test_email_recipient")
-    sender = Variable.get("mailtrap_sender")
-    sender_name = Variable.get("mailtrap_sender_name", default_var="Airflow Notifications")
-
     # Example 1: Send a simple plain text email
     send_plain_text_email = MailtrapSendEmailOperator(
         task_id="send_plain_text_email",
-        to=recipient,
+        to="{{ var.value.test_email_recipient }}",
         subject="Hello from Airflow!",
         text="This is a test email sent from Apache Airflow via Mailtrap.",
-        sender=sender,
-        sender_name=sender_name,
+        sender="{{ var.value.mailtrap_sender }}",
+        sender_name="{{ var.value.mailtrap_sender_name | default('Airflow Notifications') }}",
     )
 
     # Example 2: Send an HTML email
     send_html_email = MailtrapSendEmailOperator(
         task_id="send_html_email",
-        to=recipient,
+        to="{{ var.value.test_email_recipient }}",
         subject="Welcome to Our Service",
         html="""
         <html>
@@ -69,19 +63,19 @@ def mailtrap_send_email_example():
             </body>
         </html>
         """,
-        sender=sender,
-        sender_name=sender_name,
+        sender="{{ var.value.mailtrap_sender }}",
+        sender_name="{{ var.value.mailtrap_sender_name | default('Airflow Notifications') }}",
         category="welcome",  # For Mailtrap analytics
     )
 
     # Example 3: Send to multiple recipients
     send_to_multiple = MailtrapSendEmailOperator(
         task_id="send_to_multiple_recipients",
-        to=[recipient],  # Add more emails to this list
+        to=["{{ var.value.test_email_recipient }}"],  # Add more emails to this list
         subject="Team Update from Airflow",
         text="This email was sent to multiple recipients.",
-        sender=sender,
-        sender_name=sender_name,
+        sender="{{ var.value.mailtrap_sender }}",
+        sender_name="{{ var.value.mailtrap_sender_name | default('Airflow Notifications') }}",
     )
 
     # Run examples in sequence
