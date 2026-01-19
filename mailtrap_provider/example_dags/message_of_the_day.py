@@ -197,7 +197,7 @@ Sent via Apache Airflow + Mailtrap
         html="{{ ti.xcom_pull(task_ids='compose_email')['html'] }}",
         text="{{ ti.xcom_pull(task_ids='compose_email')['text'] }}",
         sender="{{ var.value.motd_sender }}",
-        sender_name="{{ var.value.motd_sender_name | default('Daily Inspiration') }}",
+        sender_name="{{ var.value.get('motd_sender_name', 'Daily Inspiration') }}",
         category="daily-digest",
     )
 
