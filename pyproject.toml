@@ -41,8 +41,8 @@ dev = [
 
 [project.urls]
 Homepage = "https://mailtrap.io"
-Source = "https://github.com/railsware/airflow-provider-mailtrap"
-Documentation = "https://github.com/railsware/airflow-provider-mailtrap#readme"
+Source = "https://github.com/mailtrap/airflow-provider-mailtrap"
+Documentation = "https://github.com/mailtrap/airflow-provider-mailtrap#readme"
 
 [project.readme]
 file = "README.md"
