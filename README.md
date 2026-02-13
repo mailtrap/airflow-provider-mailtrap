@@ -194,5 +194,5 @@ Apache License 2.0 - see [LICENSE](LICENSE) for details.
 ## Links
 
 - [Mailtrap Documentation](https://mailtrap.io/docs)
-- [Mailtrap Python SDK](https://github.com/railsware/mailtrap-python)
+- [Mailtrap Python SDK](https://github.com/mailtrap/mailtrap-python)
 - [Apache Airflow](https://airflow.apache.org/)
